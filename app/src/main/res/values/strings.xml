@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">A8_231A010596</string>
+    <string name="tab_home">Trang chủ</string>
+    <string name="tab_news">Tin tức</string>
+    <string name="tab_profile">Cá nhân</string>
+
+    <string name="home_hello">Xin chào, %1$s!</string>
+    <string name="home_hint">Mở Logcat và lọc theo A8_ để quan sát vòng đời Fragment khi bạn chuyển tab.</string>
+
+    <string name="list_title">Bản tin VHU</string>
+    <string name="list_none_read">Chưa đọc tin nào.</string>
+    <string name="list_last_read">Đã đọc: %1$s</string>
+    <string name="detail_mark_read">Đánh dấu đã đọc và quay lại</string>
+
+    <string name="profile_mssv">MSSV: %1$s</string>
+</resources>
