@@ -16,12 +16,15 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <!-- Container chứa danh sách tin -->
         <LinearLayout
             android:id="@+id/boxTin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvDaDoc"

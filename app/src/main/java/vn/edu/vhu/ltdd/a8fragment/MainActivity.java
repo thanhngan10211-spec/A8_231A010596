@@ -12,9 +12,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NewsListFragment.OnNewsSelectedListener {
 
-    // TODO: Thay 2201234567 bằng MSSV của bạn
     private static final String TAG = "A8_2201234567";
 
     @Override
@@ -22,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
@@ -36,24 +36,67 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.tab_news) {
                 doiTab(new NewsListFragment());
             } else if (id == R.id.tab_profile) {
-                doiTab(ProfileFragment.newInstance("Võ Phan Thanh Ngân", "231A010596"));
+                doiTab(ProfileFragment.newInstance("Nguyễn Văn A", "2201234567"));
             }
-            return true;   // BẮT BUỘC trả về true để tô sáng tab được chọn
+            return true;
         });
 
-        // Chỉ nạp Fragment mặc định ở lần tạo đầu tiên để tránh bị nạp chồng khi xoay màn hình
         if (savedInstanceState == null) {
-            bottomNav.setSelectedItemId(R.id.tab_home);
+            boolean isTablet = findViewById(R.id.detailContainer) != null;
+            if (isTablet) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.listContainer, new NewsListFragment())
+                        .replace(R.id.detailContainer, NewsDetailFragment.newInstance("Chọn một tin để xem", "Nội dung chi tiết sẽ hiển thị ở đây."))
+                        .commit();
+                bottomNav.setSelectedItemId(R.id.tab_news);
+            } else {
+                bottomNav.setSelectedItemId(R.id.tab_home);
+            }
         }
     }
 
     private void doiTab(Fragment f) {
         Log.d(TAG, "Chuyển tab sang: " + f.getClass().getSimpleName());
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, f)
-                // KHÔNG gọi addToBackStack cho các tab chính để bấm Back thoát app luôn
-                .setReorderingAllowed(true)
-                .commit();
+        boolean isTablet = findViewById(R.id.detailContainer) != null;
+
+        if (isTablet) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.listContainer, f)
+                    .setReorderingAllowed(true)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, f)
+                    .setReorderingAllowed(true)
+                    .commit();
+        }
+    }
+
+    // 4. Xử lý sự kiện nhận dữ liệu từ NewsListFragment (Thực thi NC2)
+    @Override
+    public void onNewsSelected(String title, String content) {
+        boolean isTablet = findViewById(R.id.detailContainer) != null;
+
+        NewsDetailFragment detailFragment = NewsDetailFragment.newInstance(title, content);
+
+        if (isTablet) {
+            // Trên TABLET: Cập nhật trực tiếp nội dung chi tiết vào cột bên phải (detailContainer)
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.detailContainer, detailFragment)
+                    .setReorderingAllowed(true)
+                    .commit();
+        } else {
+            // Trên ĐIỆN THOẠI: Thay thế vào khung chính (fragmentContainer) và cho phép bấm Back quay lại
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, detailFragment)
+                    .addToBackStack(null)
+                    .setReorderingAllowed(true)
+                    .commit();
+        }
     }
 }

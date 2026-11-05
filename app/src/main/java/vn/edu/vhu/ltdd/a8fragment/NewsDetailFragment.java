@@ -11,15 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/** Màn hình chi tiết tin, nhận dữ liệu qua arguments (Bundle). */
 public class NewsDetailFragment extends Fragment {
 
+    // Khai báo public static để NewsListFragment có thể truy cập qua NewsDetailFragment.KEY_TIEU_DE
     public static final String KEY_TIEU_DE = "key_tieu_de";
     private static final String KEY_NOI_DUNG = "key_noi_dung";
 
-    /**
-     * Mẫu newInstance: BẮT BUỘC sử dụng thay vì constructor có tham số
-     * để tránh lỗi crash khi Android tự động khôi phục Fragment (ví dụ khi xoay màn hình).
-     */
+    public NewsDetailFragment() {
+        // Required empty public constructor
+    }
+
     public static NewsDetailFragment newInstance(String tieuDe, String noiDung) {
         NewsDetailFragment f = new NewsDetailFragment();
         Bundle args = new Bundle();
@@ -48,11 +50,14 @@ public class NewsDetailFragment extends Fragment {
         ((TextView) view.findViewById(R.id.tvNoiDung)).setText(noiDung);
 
         Button btnDaDoc = view.findViewById(R.id.btnDaDoc);
-        btnDaDoc.setOnClickListener(v -> {
-            Bundle kq = new Bundle();
-            kq.putString(KEY_TIEU_DE, tieuDe);
-            getParentFragmentManager().setFragmentResult(NewsListFragment.REQUEST_KEY, kq);
-            getParentFragmentManager().popBackStack();   // Đóng chi tiết, quay lại danh sách
-        });
+        if (btnDaDoc != null) {
+            btnDaDoc.setOnClickListener(v -> {
+                // Gửi kết quả về Fragment đang lắng nghe rồi tự đóng
+                Bundle kq = new Bundle();
+                kq.putString(KEY_TIEU_DE, tieuDe);
+                getParentFragmentManager().setFragmentResult(NewsListFragment.REQUEST_KEY, kq);
+                getParentFragmentManager().popBackStack();
+            });
+        }
     }
 }
